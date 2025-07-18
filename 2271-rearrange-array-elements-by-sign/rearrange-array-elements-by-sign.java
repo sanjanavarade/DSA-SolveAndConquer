@@ -14,6 +14,7 @@ class Solution {
                 negative+=2;
             }
         }
+        System.gc();
         return ans;
     }
 }
