@@ -1,34 +1,31 @@
 class Solution {
     public String longestPalindrome(String s) {
-        int n = s.length();
-        String rev = new StringBuilder(s).reverse().toString();
+        if (s == null || s.length() < 2) return s;
 
-        int[][] dp = new int[n + 1][n + 1];
+        int start = 0, maxLen = 1;
 
-        int maxLen = 0;
-        int endIndex = 0; // end index in original string
+        for (int i = 0; i < s.length(); i++) {
+            // Odd length palindrome
+            int len1 = expand(s, i, i);
+            // Even length palindrome
+            int len2 = expand(s, i, i + 1);
 
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (s.charAt(i - 1) == rev.charAt(j - 1)) {
-                    dp[i][j] = 1 + dp[i - 1][j - 1];
+            int len = Math.max(len1, len2);
 
-                    // original index mapping check
-                    int originalIndex = i - 1;
-                    int reversedIndex = n - j;
-
-                    if (originalIndex - dp[i][j] + 1 == reversedIndex) {
-                        if (dp[i][j] > maxLen) {
-                            maxLen = dp[i][j];
-                            endIndex = i - 1;
-                        }
-                    }
-                } else {
-                    dp[i][j] = 0;
-                }
+            if (len > maxLen) {
+                maxLen = len;
+                start = i - (len - 1) / 2;
             }
         }
+        return s.substring(start, start + maxLen);
+    }
 
-        return s.substring(endIndex - maxLen + 1, endIndex + 1);
+    private int expand(String s, int left, int right) {
+        while (left >= 0 && right < s.length()
+                && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
     }
 }
